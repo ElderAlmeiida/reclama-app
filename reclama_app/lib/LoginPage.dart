@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'CadastroPage.dart'; // Importe a página de cadastro
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
@@ -25,6 +26,26 @@ class _LoginPage extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Color(0xFF204E79)),
+                      onPressed: () {
+                        // Adicione a navegação de volta ao Dashboard aqui
+                        Navigator.pop(context);
+                      },
+                    ),
+                    const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF204E79),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 Image.asset(
                   'assets/images/Logo.png',
                   width: deviceWidth * 0.8,
@@ -76,6 +97,8 @@ class _LoginPage extends State<LoginPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, insira sua senha.';
+                      } else if (value.length < 6) {
+                        return 'Digite uma senha mais forte';
                       }
                       return null;
                     },
@@ -89,7 +112,8 @@ class _LoginPage extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // O formulário está válido, faça algo aqui
+                        // Chame a função de login aqui
+                        // logar();
                         print('Formulário válido');
                       }
                     },
@@ -99,6 +123,29 @@ class _LoginPage extends State<LoginPage> {
                     child: const Text('ENTRAR', style: TextStyle(color: Colors.white)),
                   ),
                 ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Ainda não tem uma conta?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF204E79),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CadastroPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Cadastre-se',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF204E79),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -106,7 +153,13 @@ class _LoginPage extends State<LoginPage> {
       ),
     );
   }
+
+  // void logar() {
+  //   // Adicione lógica de login aqui
+  //   print('Realizando login...');
+  // }
 }
+
 
 
 
