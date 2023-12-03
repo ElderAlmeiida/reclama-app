@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'DashboardPage.dart';
 
 void main() {
+  
   runApp(const MainApp());
+ 
 }
 
 class MainApp extends StatelessWidget {

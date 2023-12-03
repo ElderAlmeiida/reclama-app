@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reclama_app/database_helper.dart';
+import 'package:reclama_app/DatabaseHelper.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({Key? key}) : super(key: key);
@@ -14,12 +14,12 @@ class _CadastroPageState extends State<CadastroPage> {
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _confirmarSenhaController = TextEditingController();
 
-  late final DatabaseHelper _database;
+  late final DatabaseHelper _databaseHelper;
 
   @override
   void initState() {
     super.initState();
-    _database = DatabaseHelper();
+    _databaseHelper = DatabaseHelper();
   }
 
   Future<void> _cadastrarUsuario() async {
@@ -51,16 +51,38 @@ class _CadastroPageState extends State<CadastroPage> {
     }
 
     try {
+      // Verificar se o usuário já está cadastrado
+      final existingUser = await _databaseHelper.getCadastroPorEmail(email);
+      if (existingUser != null) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Erro'),
+              content: const Text('Este e-mail já está cadastrado.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+
       // Criar um mapa com os dados do usuário
       final Map<String, dynamic> usuario = {
-        'nome_usuario': nome,
-        'email_usuario': email,
-        'senha_usuario': senha,
-        // Adicione outros campos conforme necessário
+        'nome': nome,
+        'email': email,
+        'senha': senha,
       };
 
       // Inserir usuário no banco de dados SQLite
-      await _database.insertUsuario(usuario);
+      await _databaseHelper.insertCadastro(usuario);
 
       // Cadastro bem-sucedido
       print('Usuário cadastrado com sucesso!');
@@ -148,4 +170,3 @@ void main() {
     ),
   );
 }
-

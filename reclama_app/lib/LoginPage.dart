@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'CadastroPage.dart'; // Importe a página de cadastro
+import 'HomePage.dart'; // Importe a página inicial (HomePage)
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,6 +13,10 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
+
+  // Usuário e senha padrão para teste
+  final String usuarioPadrao = 'user';
+  final String senhaPadrao = '123456';
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +117,22 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Chame a função de login aqui
-                        // logar();
-                        print('Formulário válido');
+                        // Verificar as credenciais
+                        if (_emailController.text == usuarioPadrao &&
+                            _senhaController.text == senhaPadrao) {
+                          // Credenciais corretas, navegar para HomePage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomePage()),
+                          );
+                        } else {
+                          // Credenciais incorretas, exibir mensagem
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Credenciais incorretas. Tente novamente.'),
+                            ),
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -153,11 +171,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  // void logar() {
-  //   // Adicione lógica de login aqui
-  //   print('Realizando login...');
-  // }
 }
 
 

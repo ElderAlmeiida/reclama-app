@@ -3,6 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'HomePage.dart';
 import 'LoginPage.dart';
 
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: DashboardPage(),
+    );
+  }
+}
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
@@ -13,21 +26,24 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPage extends State<DashboardPage> {
   late PageController _pageController;
   int _currentPage = 0;
+  bool _hasToken = false;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     verificarUsuario().then((temUsuario) {
-      if (temUsuario) {
+      setState(() {
+        _hasToken = temUsuario;
+      });
+
+      if (_hasToken) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => const HomePage(),
           ),
         );
-      } else {
-        // Continue com a inicialização normal
       }
     });
   }
@@ -67,7 +83,11 @@ class _DashboardPage extends State<DashboardPage> {
           Text(
             text,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18.0),
+            style: const TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, // Cor do texto
+            ),
           ),
         ],
       ),
@@ -78,19 +98,30 @@ class _DashboardPage extends State<DashboardPage> {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginPage(),
-            ),
-          );
+          if (_hasToken) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginPage(),
+              ),
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF204E79), // Background color
+          backgroundColor: const Color(0xffff09416e), // Cor do botão
         ),
         child: const Text(
           "Iniciar",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white, // Cor do texto
+          ),
         ),
       ),
     );
@@ -98,7 +129,7 @@ class _DashboardPage extends State<DashboardPage> {
 
   Widget _buildBottomNavigationBar() {
     return BottomAppBar(
-      color: const Color(0xFF204E79),
+      color: const Color(0xffff09416e), // Cor da barra de navegação
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -112,7 +143,7 @@ class _DashboardPage extends State<DashboardPage> {
               }
             },
             icon: const Icon(Icons.arrow_back),
-            color: Colors.white,
+            color: Colors.white, // Cor do ícone
           ),
           IconButton(
             onPressed: () {
@@ -124,7 +155,7 @@ class _DashboardPage extends State<DashboardPage> {
               }
             },
             icon: const Icon(Icons.arrow_forward),
-            color: Colors.white,
+            color: Colors.white, // Cor do ícone
           ),
         ],
       ),
@@ -138,3 +169,4 @@ class _DashboardPage extends State<DashboardPage> {
     return token != null;
   }
 }
+
